@@ -15,6 +15,9 @@ public class SimpleBank {
 
        }
 
-
+    public static void createTable(String query, Connection connection) throws SQLException {
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.executeUpdate();
+    }
 }
 

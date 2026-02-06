@@ -3,6 +3,7 @@ package simpleBankTest;
 import org.junit.Test;
 import simpleBank.SimpleBank;
 
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -25,6 +26,27 @@ public class SimpleBankTest {
 
         }
 
+    }
+
+    @Test
+    public void testCanCreateTable() {
+        String query = """
+                CREATE TABLE IF NOT EXISTS accounts (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                account_number VARCHAR(50)UNIQUE NOT NULL,
+                balance DECIMAL(15,2) DEFAULT 0.00
+                );""";
+        try (Connection connection = SimpleBank.connectToDatabase(username, password)){
+            SimpleBank.createTable(query, connection);
+            assertNotNull(connection);
+            DatabaseMetaData databaseMetaData = connection.getMetaData();
+            ResultSet resultSet = databaseMetaData.getTables(null,null,"accounts",new String[]{"TABLE"});
+            boolean isTablesExists = resultSet.next();
+            assertTrue(isTablesExists);
+        } catch (SQLException e) {
+            e.printStackTrace();
+            assertNull(e);
+        }
     }
 
 }
